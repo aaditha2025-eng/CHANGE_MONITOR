@@ -144,8 +144,8 @@ Execution Engine: {res['model_used']}
             
         with image_col:
             res_subcol1, res_subcol2 = st.columns(2)
-            res_subcol1.image(res['mask_path'], caption="AI Feature Mask", use_column_width=True)
-            res_subcol2.image(res['highlight_path'], caption="Static Geospatial Overlay", use_column_width=True)
+            res_subcol1.image(res['mask_path'], caption="AI Feature Mask", use_container_width=True)
+            res_subcol2.image(res['highlight_path'], caption="Static Geospatial Overlay", use_container_width=True)
 
         st.markdown("---")
         st.markdown("### 🗺️ Interactive Geospatial Projection")
