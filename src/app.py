@@ -155,12 +155,37 @@ Execution Engine: {res['model_used']}
         st.markdown("### 🗺️ Interactive Geospatial Projection")
         st.info(f"The uploaded imagery and AI change mask projected at coordinates [{demo_lat}, {demo_lon}]. Use the layer control (top right) to toggle the mask.")
         
-        # Use user-defined center
-        lat, lon = demo_lat, demo_lon
-        m = folium.Map(location=[lat, lon], zoom_start=15)
-        
-        # Calculate bounds for image overlay (~2x2 km bounding box)
-        bounds = [[lat - 0.01, lon - 0.015], [lat + 0.01, lon + 0.015]]
+        # Attempt Automatic GeoTIFF Coordinate Extraction
+        extracted_bounds = None
+        try:
+            import rasterio
+            from rasterio.warp import transform_bounds
+            
+            if b_path.lower().endswith(('.tif', '.tiff')):
+                with rasterio.open(b_path) as src:
+                    if src.crs:
+                        # Transform bounds from native CRS to standard GPS (EPSG:4326)
+                        # transform_bounds returns (west, south, east, north)
+                        west, south, east, north = transform_bounds(src.crs, 'EPSG:4326', *src.bounds)
+                        
+                        # Folium expects bounds in [[lat_min, lon_min], [lat_max, lon_max]]
+                        extracted_bounds = [[south, west], [north, east]]
+                        lat = (south + north) / 2
+                        lon = (west + east) / 2
+        except Exception as e:
+            # Silent fail for standard images or missing libraries
+            pass
+            
+        if extracted_bounds:
+            st.success(f"🌍 Geospatial metadata detected! Auto-centering map at [{lat:.4f}, {lon:.4f}]")
+            bounds = extracted_bounds
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+        else:
+            # Fall back to user-defined manual center
+            lat, lon = demo_lat, demo_lon
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            # Generic bounds (~2x2 km bounding box)
+            bounds = [[lat - 0.01, lon - 0.015], [lat + 0.01, lon + 0.015]]
         
         import base64
         def get_base64_image(image_path):
