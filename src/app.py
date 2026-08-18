@@ -57,13 +57,13 @@ demo_lon = coord_col2.number_input("Target Longitude", value=80.2707, format="%.
 
 st.markdown("---")
 col1, col2 = st.columns(2)
-before_file = col1.file_uploader("Upload 'Before' Image (Time 1)", type=["jpg", "jpeg", "png"])
-after_file = col2.file_uploader("Upload 'After' Image (Time 2)", type=["jpg", "jpeg", "png"])
+before_file = col1.file_uploader("Upload 'Before' Image (Time 1)", type=["jpg", "jpeg", "png", "tif", "tiff"])
+after_file = col2.file_uploader("Upload 'After' Image (Time 2)", type=["jpg", "jpeg", "png", "tif", "tiff"])
 
 if before_file and after_file:
     from PIL import Image
-    b_image = Image.open(before_file)
-    a_image = Image.open(after_file)
+    b_image = Image.open(before_file).convert("RGB")
+    a_image = Image.open(after_file).convert("RGB")
     col1.image(b_image, caption="Historical Observation", use_container_width=True)
     col2.image(a_image, caption="Recent Observation", use_container_width=True)
     
@@ -72,8 +72,12 @@ if before_file and after_file:
     if st.button("🚀 Execute AI Change Detection Pipeline", type="primary", use_container_width=True):
         with st.spinner("Running deep learning semantic segmentation..."):
             os.makedirs("data/cached", exist_ok=True)
-            b_path = "data/cached/temp_upload_before.jpg"
-            a_path = "data/cached/temp_upload_after.jpg"
+            
+            # Save with original extensions to support TIFF
+            b_ext = before_file.name.split('.')[-1].lower()
+            a_ext = after_file.name.split('.')[-1].lower()
+            b_path = f"data/cached/temp_upload_before.{b_ext}"
+            a_path = f"data/cached/temp_upload_after.{a_ext}"
             
             with open(b_path, "wb") as f:
                 f.write(before_file.getbuffer())
