@@ -61,8 +61,11 @@ before_file = col1.file_uploader("Upload 'Before' Image (Time 1)", type=["jpg", 
 after_file = col2.file_uploader("Upload 'After' Image (Time 2)", type=["jpg", "jpeg", "png"])
 
 if before_file and after_file:
-    col1.image(before_file, caption="Historical Observation", use_column_width=True)
-    col2.image(after_file, caption="Recent Observation", use_column_width=True)
+    from PIL import Image
+    b_image = Image.open(before_file)
+    a_image = Image.open(after_file)
+    col1.image(b_image, caption="Historical Observation", use_container_width=True)
+    col2.image(a_image, caption="Recent Observation", use_container_width=True)
     
     st.markdown("---")
     
