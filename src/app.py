@@ -6,7 +6,7 @@ import folium
 from streamlit_folium import st_folium
 
 st.set_page_config(
-    page_title="Earth Observation Analytics",
+    page_title="TERRACHANGE",
     page_icon="🌍",
     layout="wide"
 )
@@ -14,7 +14,7 @@ st.set_page_config(
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
-st.sidebar.title("🌍 Geospatial AI Platform")
+st.sidebar.title("🌍 TERRACHANGE")
 st.sidebar.markdown("---")
 st.sidebar.markdown("""
 **Core Philosophy:**
@@ -30,7 +30,7 @@ We are building an intelligence layer on top of satellite data, NOT just another
 # ---------------------------------------------------------
 # Main Dashboard
 # ---------------------------------------------------------
-st.title("AI-Powered Earth Observation Analytics")
+st.title("🌍 TERRACHANGE: Earth Observation Analytics")
 st.markdown("Automated change detection and prioritization for disaster response, infrastructure, and agriculture.")
 st.markdown("---")
 
